@@ -1,26 +1,16 @@
-import os
-from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.tools import Tool
 from langgraph.prebuilt import create_react_agent
-import streamlit as st
 
 def initialize_agent():
     try:
-        load_dotenv()
-        
-        # Validate environment variables
-        required_vars = ["OPENROUTER_API_KEY", "OPENROUTER_API_BASE", "MODEL_NAME"]
-        missing_vars = [var for var in required_vars if not os.getenv(var)]
-        
-        if missing_vars:
-            raise ValueError(f"Missing environment variables: {', '.join(missing_vars)}")
-
+        # Get config from Streamlit secrets
         model = ChatOpenAI(
             temperature=0,
-            openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-            openai_api_base=os.getenv("OPENROUTER_API_BASE"),
-            model=os.getenv("MODEL_NAME")
+            openai_api_key=st.secrets["OPENROUTER_API_KEY"],
+            openai_api_base=st.secrets["OPENROUTER_API_BASE"],
+            model=st.secrets.get("MODEL_NAME", "anthropic/claude-3-haiku"),
+            streaming=True  # Ensure streaming is enabled
         )
 
         tools = [
@@ -32,8 +22,15 @@ def initialize_agent():
             )
         ]
         
-        return create_react_agent(model, tools)
+        agent = create_react_agent(model, tools)
         
+        # Verify the agent has streaming capability
+        if not hasattr(agent, 'stream'):
+            raise ValueError("Created agent doesn't support streaming")
+            
+        return agent
+        
+    except KeyError as e:
+        raise ValueError(f"Missing configuration: {str(e)}")
     except Exception as e:
-        st.error(f"Failed to initialize agent: {str(e)}")
-        return None
+        raise ValueError(f"Agent creation failed: {str(e)}")
