@@ -12,6 +12,26 @@ st.set_page_config(
 # Initialize session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
+# Initialize agent only once
+if "agent" not in st.session_state:
+    st.session_state.agent = initialize_agent()
+    if st.session_state.agent is None:
+        st.error("Failed to initialize AI agent. Please check your configuration.")
+        st.stop()
+
+
+
+# Set page config
+st.set_page_config(
+    page_title="AI Assistant",
+    page_icon="🤖",
+    layout="wide"
+)
+
+# Initialize session state
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 if "agent" not in st.session_state:
     st.session_state.agent = initialize_agent()
 
