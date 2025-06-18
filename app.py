@@ -2,7 +2,7 @@ import streamlit as st
 from agent_utils import initialize_agent
 from langchain_core.messages import HumanMessage
 
-# Set page config
+# PAGE CONFIG MUST COME FIRST
 st.set_page_config(
     page_title="AI Assistant",
     page_icon="🤖",
@@ -13,29 +13,14 @@ st.set_page_config(
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Initialize agent only once
+# Initialize agent (after page config)
 if "agent" not in st.session_state:
     st.session_state.agent = initialize_agent()
     if st.session_state.agent is None:
         st.error("Failed to initialize AI agent. Please check your configuration.")
         st.stop()
 
-
-
-# Set page config
-st.set_page_config(
-    page_title="AI Assistant",
-    page_icon="🤖",
-    layout="wide"
-)
-
-# Initialize session state
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-if "agent" not in st.session_state:
-    st.session_state.agent = initialize_agent()
-
-# Sidebar for settings
+# Sidebar - must come after page config
 with st.sidebar:
     st.header("Settings")
     st.markdown("Using OpenRouter API")
