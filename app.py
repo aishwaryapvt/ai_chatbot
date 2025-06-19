@@ -32,6 +32,7 @@ if st.session_state.agent is None:
     """)
     st.stop()
 
+# Rest of your UI code...
 
 # Updated chat input section with better error handling
 if prompt := st.chat_input("Type your message..."):
@@ -80,4 +81,3 @@ st.caption("Ask me anything or use the calculator")
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-
