@@ -32,7 +32,6 @@ if st.session_state.agent is None:
     """)
     st.stop()
 
-# Rest of your UI code...
 
 # Updated chat input section with better error handling
 if prompt := st.chat_input("Type your message..."):
